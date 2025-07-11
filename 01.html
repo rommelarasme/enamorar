@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi Amor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Roboto', sans-serif;
+            transition: all 1s ease;
+        }
+        
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            transition: all 1s ease;
+        }
+        
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            color: #e91e63;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            transition: all 1s ease;
+        }
+        
+        .message-box {
+            background-color: #fff5f7;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 1s ease;
+        }
+        
+        #message {
+            font-size: 1.2rem;
+            color: #333;
+            margin: 0;
+            transition: all 0.5s ease;
+        }
+        
+        .timer {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: #e91e63;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        
+        #btn {
+            background-color: #e91e63;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        #btn:hover {
+            background-color: #c2185b;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
+        }
+        
+        .fade-out {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.5s ease;
+        }
+        
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.5s ease;
+        }
+        
+        .heart {
+            display: none;
+            font-size: 150px; /* Tamaño aumentado */
+            color: #e91e63;
+            animation: pulse 1.5s infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.3); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        .final-message {
+            display: none;
+            font-size: 2.4rem; /* 20% más grande (de 2rem a 2.4rem) */
+            color: white; /* Color blanco */
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 100%;
+            z-index: 10;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+        }
+        
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .final-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+            display: none;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="main-container">
+        <h1>Lo más bonito que me pudo haber pasado</h1>
+        <div class="message-box">
+            <p id="message">Eres la persona más importante en mi vida.</p>
+            <div class="timer" id="timer">8</div>
+        </div>
+        <button id="btn">Cambiar ahora</button>
+    </div>
+    
+    <div class="final-background" id="final-background"></div>
+    <div class="heart" id="heart">❤️</div>
+    <div class="final-message" id="final-message">¡Eres todo para mí! ❤️</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const messages = [
+                "Eres mi sol en los días grises.",
+                "Tu sonrisa es mi razón para ser feliz.",
+                "Cada momento a tu lado es un regalo.",
+                "Te amo más de lo que las palabras pueden expresar.",
+                "Eres la mejor cosa que me ha pasado en la vida.",
+                "Mi amor por ti crece cada día más.",
+                "Eres mi todo.",
+                "No hay estrella que brille más que tu corazón.",
+                "Eres el amor que siempre soñé encontrar.",
+                "Contigo hasta el infinito y más allá."
+            ];
+            
+            const messageElement = document.getElementById('message');
+            const btn = document.getElementById('btn');
+            const timerElement = document.getElementById('timer');
+            const mainContainer = document.getElementById('main-container');
+            const heart = document.getElementById('heart');
+            const finalMessage = document.getElementById('final-message');
+            const finalBackground = document.getElementById('final-background');
+            
+            let timer = 8;
+            let interval;
+            let usedMessages = [];
+            
+            function getRandomMessage() {
+                if (usedMessages.length === messages.length) {
+                    // Todos los mensajes mostrados
+                    return null;
+                }
+                
+                let availableMessages = messages.filter(msg => !usedMessages.includes(msg));
+                let newMessage = availableMessages[Math.floor(Math.random() * availableMessages.length)];
+                usedMessages.push(newMessage);
+                return newMessage;
+            }
+            
+            function changeMessage() {
+                let newMessage = getRandomMessage();
+                
+                if (newMessage === null) {
+                    // Fin de los mensajes
+                    endPresentation();
+                    return;
+                }
+                
+                messageElement.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    messageElement.textContent = newMessage;
+                    messageElement.classList.remove('fade-out');
+                    messageElement.classList.add('fade-in');
+                    
+                    setTimeout(() => {
+                        messageElement.classList.remove('fade-in');
+                    }, 500);
+                    
+                    // Reiniciar contador
+                    timer = 8;
+                    timerElement.textContent = timer;
+                }, 500);
+            }
+            
+            function startTimer() {
+                clearInterval(interval);
+                interval = setInterval(() => {
+                    timer--;
+                    timerElement.textContent = timer;
+                    
+                    if (timer <= 0) {
+                        changeMessage();
+                    }
+                }, 1000);
+            }
+            
+            function endPresentation() {
+                clearInterval(interval);
+                
+                // Desvanecer todo el contenido
+                mainContainer.classList.add('hidden');
+                
+                // Mostrar fondo rojo, corazón y mensaje después de 1 segundo
+                setTimeout(() => {
+                    finalBackground.style.display = 'block';
+                    heart.style.display = 'block';
+                    finalMessage.style.display = 'block';
+                }, 1000);
+            }
+            
+            // Iniciar
+            startTimer();
+            btn.addEventListener('click', () => {
+                changeMessage();
+                startTimer();
+            });
+        });
+    </script>
+</body>
+</html>
